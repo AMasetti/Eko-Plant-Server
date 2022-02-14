@@ -1,0 +1,57 @@
+version: '2.1'
+
+services:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 18080:8080
+    environment:
+      ADMINER_DESIGN: dracula
+
+  node-red:
+    build:
+      context: .
+      dockerfile: ./node-red/Dockerfile
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "1880:1880"
+    # volumes:
+    #   - ./node-red/data:/data
+
+  mosquitto:
+    build:
+      context: .
+      dockerfile: ./mqtt/Dockerfile
+    hostname: mqtt
+    ports:
+      - 1883:1883
+      - 18883:8883
+    # volumes:
+    #   - ./mqtt/mosquitto-data:/mosquitto/data
+    #   - ./mqtt/mosquitto-logs:/mosquitto/log
+    #   - ./mqtt/mosquitto-conf:/mosquitto/config
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: myRootPassword
+      MYSQL_DATABASE: EkoPlant
+      MYSQL_USER: PlantUser
+      MYSQL_PASSWORD: welovepugs
+    volumes:
+      - ./mysql/mysql_tables:/docker-entrypoint-initdb.d
+      # - ./mysql/mysql_db:/var/lib/mysql
+
+  grafana:
+    build:
+      context: .
+      dockerfile: ./grafana-docker/Dockerfile
+    ports:
+      - '13000:3000'
+    volumes:
+      - ./grafana:/var/lib/grafana

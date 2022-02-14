@@ -1,0 +1,148 @@
+[
+    {
+        "id": "e8ecd8bfa492ef27",
+        "type": "tab",
+        "label": "Myflow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f55d741e9175ae49",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "mysql",
+        "port": "3306",
+        "db": "EkoPlant",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "35fa553c4411f132",
+        "type": "mqtt-broker",
+        "name": "Data Plant Broker",
+        "broker": "mqtt",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ac5a661c10558420",
+        "type": "mysql",
+        "z": "e8ecd8bfa492ef27",
+        "mydb": "f55d741e9175ae49",
+        "name": "EKO Plant DB",
+        "x": 800,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0a150319d5ae049c",
+        "type": "function",
+        "z": "e8ecd8bfa492ef27",
+        "name": "",
+        "func": "msg.payload=[25, msg.mqttdata.soil_hum, msg.mqttdata.dht_temp, msg.mqttdata.dht_hum, msg.mqttdata.light, true];\nmsg.topic=\"INSERT INTO plant_data (`soilTemperature`, `soilHumidity`, `ambientTemperature`, `ambientHumidity`, `uvIndex`, `watered`) VALUES ( ?, ?, ?, ?, ?, ?);\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 60,
+        "wires": [
+            [
+                "ac5a661c10558420"
+            ]
+        ]
+    },
+    {
+        "id": "cf2d32cf09e6af82",
+        "type": "mqtt in",
+        "z": "e8ecd8bfa492ef27",
+        "name": "",
+        "topic": "iotplant/eko/data",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "35fa553c4411f132",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 60,
+        "wires": [
+            [
+                "66d62bb9272149bb"
+            ]
+        ]
+    },
+    {
+        "id": "66d62bb9272149bb",
+        "type": "change",
+        "z": "e8ecd8bfa492ef27",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "mqttdata",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "date"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 60,
+        "wires": [
+            [
+                "0a150319d5ae049c"
+            ]
+        ]
+    },
+    {
+        "id": "103bd34ebf0f3834",
+        "type": "debug",
+        "z": "e8ecd8bfa492ef27",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 120,
+        "wires": []
+    }
+]
