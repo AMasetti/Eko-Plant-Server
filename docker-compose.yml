@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
 
   mysql:
-    image: mysql:5.7
+    image: hypriot/rpi-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: myRootPassword
@@ -48,6 +48,7 @@ services:
       # - ./mysql/mysql_db:/var/lib/mysql
 
   grafana:
+    user: "1001"
     build:
       context: .
       dockerfile: ./grafana-docker/Dockerfile
