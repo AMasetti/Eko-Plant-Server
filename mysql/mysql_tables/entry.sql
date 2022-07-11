@@ -1,0 +1,3 @@
+CREATE DATABASE smodDB;
+USE smodDB;
+CREATE TABLE BikeSensors();
